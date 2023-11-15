@@ -1,0 +1,80 @@
+import { useReducer } from "react";
+
+const CALC_OPTIONS = ["add", "minus", "divide", "multiply"];
+
+const reducer = (state, { type, payload }) => {
+  switch (type) {
+    case "change": {
+      const { name, value } = payload;
+      return { ...state, [name]: value };
+    }
+    case "add":{
+      return { ...state, result: state.a + state.b };
+    }
+    case "minus":{
+      return { ...state, result: state.a - state.b };
+    }
+    case "divide":{
+      return { ...state, result: state.a / state.b };
+    }
+    case "multiply":{
+      return { ...state, result: state.a * state.b };
+    }
+    default:
+      throw new Error('에러 값입니다');
+  }
+}
+
+const Example = () => {
+  const initState = {
+    a: 1,
+    b: 2,
+    result: 3,
+  };
+
+  const [state, dispatch] = useReducer(reducer, initState);
+
+  const calculate = (e) => {
+    dispatch({type: e.target.value});
+  };
+
+  const numChangeHandler = (e) => {
+    const numericValue = parseInt(e.target.value, 10);
+    dispatch({ type: 'change', payload: { name: e.target.name, value: parseInt(e.target.value) } });
+  }
+
+  return (
+    <>
+    <h3>연습문제</h3>
+    <p>useReducer를 사용해 원본과 같이 만드셈</p>
+      <div>
+        a:
+        <input
+          type="number"
+          name="a"
+          value={state.a}
+          onChange={numChangeHandler}
+        />
+      </div>
+      <div>
+        b:
+        <input
+          type="number"
+          name="b"
+          value={state.b}
+          onChange={numChangeHandler}
+        />
+      </div>
+      <select value={state.type} name="type" onChange={calculate}>
+        {CALC_OPTIONS.map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+        ))}
+      </select>
+      <h3> 결과：{state.result}</h3>
+    </>
+  );
+};
+
+export default Example;
